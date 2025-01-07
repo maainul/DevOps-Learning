@@ -143,3 +143,23 @@ ubuntu@ip-172-31-95-119:/var/lib/jenkins/workspace/node-demo$
 ```
 
 ![Screenshot(33)](https://github.com/user-attachments/assets/b019a347-2d2c-4b7d-886c-e78beb3ab2bd)
+
+
+### 9. Create agent node 
+
+Create EC2 instance 
+
+install following:
+
+1. java
+2. docker.io
+3. docker-compose-v2
+
+
+```
+    sudo apt-get update
+    sudo apt install fontconfig openjdk-17-jre
+    sudo apt-get install docker.io
+    sudo apt-get install docker-compose-v2 
+    sudo usermod -aG docker $USER && newgrp docker 
+```
