@@ -14,6 +14,7 @@
 ### 10. Setting Up Agent Node in Jenkins
 ### 11. Add Dockerfile
 ### 12. Shared Library
+### 13. Install and Integrate Sonarqube in Jenkins
 
 
 ### 1. Install Jenkins on EC2 :
@@ -342,3 +343,4 @@ pipeline {
     }
 }
 ```
+### 13. Install and Integrate Sonarqube in Jenkins
