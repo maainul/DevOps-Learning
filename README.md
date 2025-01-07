@@ -9,7 +9,7 @@
 ### 5. Add 8080 Port in Security Group
 ### 6. Update Password
 ### 7. Create Pipeline Project 
-
+### 8. Add Webhook
 
 
 ### 1. Install Jenkins on EC2 :
@@ -128,4 +128,17 @@ pipeline {
     }
 }
 ```
+### 8. Add Webhook
+
 ![Screenshot(30)](https://github.com/user-attachments/assets/83abf3ea-96c7-4cc6-81df-c0bc0d12be57)
+![Screenshot(31)](https://github.com/user-attachments/assets/346fcb8d-0229-4830-82c5-53a886203d7d)
+![Screenshot(32)](https://github.com/user-attachments/assets/bc0a0262-d3d1-44d9-ae6b-7318fdbe789e)
+
+After Reduild it create new folder in master 
+```
+ubuntu@ip-172-31-95-119:/var/lib/jenkins/workspace/node-demo$ ls
+README.md  index.js  package-lock.json  package.json
+ubuntu@ip-172-31-95-119:/var/lib/jenkins/workspace/node-demo$
+```
+
+![Screenshot(33)](https://github.com/user-attachments/assets/b019a347-2d2c-4b7d-886c-e78beb3ab2bd)
