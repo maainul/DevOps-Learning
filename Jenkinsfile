@@ -1,19 +1,20 @@
+@Library('Shared') _
 pipeline {
     agent { label "mainul" }
 
     stages {
         stage('Code') {
             steps {
-                echo "Cloning the code..."
-                git url: "https://github.com/maainul/jenkins-learning.git", branch: "master"
-                echo "Code cloned successfully!"
+                script{
+                    clone("https://github.com/maainul/jenkins-learning.git","master")
+                }
             }
         }
         stage('Build') {
             steps {
-                echo "Building the Docker image..."
-                sh 'docker build -t notes-demo:latest .'
-                echo "Docker image built successfully!"
+                 script{
+                   docker_build("maainul","notes-demo","latest")
+               }
             }
         }
         stage('Test') {

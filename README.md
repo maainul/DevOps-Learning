@@ -12,7 +12,8 @@
 ### 8. Add Webhook
 ### 9. Create agent node 
 ### 10. Setting Up Agent Node in Jenkins
-### 11. 11. Add Dockerfile
+### 11. Add Dockerfile
+### 12. Shared Library
 
 
 ### 1. Install Jenkins on EC2 :
@@ -273,6 +274,58 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo "Stopping and removing existing containers..."
+                sh '''
+                    # Stop all running containers
+                    docker ps -q | xargs -r docker stop
+                    # Remove all stopped containers
+                    docker ps -aq | xargs -r docker rm
+                '''
+                echo "Existing containers stopped and removed."
+
+                echo "Deploying the application..."
+                sh 'docker compose up -d'
+                echo "Application deployed successfully!"
+            }
+        }
+    }
+}
+```
+
+### 12. Shared Library
+
+![Screenshot(41)](https://github.com/user-attachments/assets/a30d82cb-ec47-42d9-8226-2c166667145f)
+![Screenshot(42)](https://github.com/user-attachments/assets/1cdf5950-d6a7-4241-86b8-1488638d1ea1)
+
+```groovy
+@Library('Shared') _
+pipeline {
+    agent { label "mainul" }
+
+    stages {
+        stage('Code') {
+            steps {
+                script{
+                    clone("https://github.com/maainul/jenkins-learning.git","master")
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                 script{
+                   docker_build("maainul","notes-demo","latest")
+               }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo "Running tests..."
+                // Add test commands here if required
+                echo "Tests completed!"
+            }
+        }
+        stage('Deploy') {
+            steps {
+               echo "Stopping and removing existing containers..."
                 sh '''
                     # Stop all running containers
                     docker ps -q | xargs -r docker stop
