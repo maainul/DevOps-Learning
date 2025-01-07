@@ -2,6 +2,6 @@ services:
   web:
     build:
       context: .
-    image: "notes-demo:latest"
+    image: "maainul/notes-demo:latest"
     ports:
       - 8000:8000
