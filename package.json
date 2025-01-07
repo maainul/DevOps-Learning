@@ -1,0 +1,23 @@
+{
+  "name": "jenkins-learning",
+  "version": "1.0.0",
+  "description": "Sometimes we need to install many things on master machine so 16GB RAM would be good .",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maainul/jenkins-learning.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maainul/jenkins-learning/issues"
+  },
+  "homepage": "https://github.com/maainul/jenkins-learning#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
