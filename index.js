@@ -9,6 +9,14 @@ app.get("/", async(req,res)=>{
     })
 })
 
+app.get("/f1", async(req,res)=>{
+    return res.json({
+        status:201,
+        body:'f1 Message'
+    })
+})
+
+
 app.get("/get", async(req,res)=>{
     return res.json({
         status:201,
