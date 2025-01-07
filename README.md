@@ -12,6 +12,8 @@
 ### 8. Add Webhook
 ### 9. Create agent node 
 ### 10. Setting Up Agent Node in Jenkins
+### 11. 11. Add Dockerfile
+
 
 ### 1. Install Jenkins on EC2 :
 
@@ -204,4 +206,28 @@ Rerun . It will create folder in agent.
 ```
 ubuntu@ip-172-31-86-235:~$ ls
 remoting  remoting.jar  workspace
+```
+
+### 11. Add Dockerfile
+```Dockerfile
+# Use the official Node.js image as the base image
+FROM node:18-alpine
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --only=production
+
+# Copy the rest of the application files to the working directory
+COPY . .
+
+# Expose the application's port
+EXPOSE 8000
+
+# Start the application
+CMD ["node", "index.js"]
 ```
