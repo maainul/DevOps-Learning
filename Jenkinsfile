@@ -25,9 +25,18 @@ pipeline {
         }
         stage('Deploy') {
             steps {
+               echo "Stopping and removing existing containers..."
+                sh '''
+                    # Stop all running containers
+                    docker ps -q | xargs -r docker stop
+                    # Remove all stopped containers
+                    docker ps -aq | xargs -r docker rm
+                '''
+                echo "Existing containers stopped and removed."
+
                 echo "Deploying the application..."
-                sh 'docker compose up -d || echo "Deployment failed!"'
-                echo "Application deployed!"
+                sh 'docker compose up -d'
+                echo "Application deployed successfully!"
             }
         }
     }
