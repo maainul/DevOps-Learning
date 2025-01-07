@@ -133,6 +133,7 @@ pipeline {
 ![Screenshot(30)](https://github.com/user-attachments/assets/83abf3ea-96c7-4cc6-81df-c0bc0d12be57)
 ![Screenshot(31)](https://github.com/user-attachments/assets/346fcb8d-0229-4830-82c5-53a886203d7d)
 ![Screenshot(32)](https://github.com/user-attachments/assets/bc0a0262-d3d1-44d9-ae6b-7318fdbe789e)
+![Screenshot(34)](https://github.com/user-attachments/assets/055204b9-f9ca-44f1-b68b-797fa000ae92)
 
 After Reduild it create new folder in master 
 ```
