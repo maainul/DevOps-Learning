@@ -10,7 +10,8 @@
 ### 6. Update Password
 ### 7. Create Pipeline Project 
 ### 8. Add Webhook
-
+### 9. Create agent node 
+### 10. Setting Up Agent Node in Jenkins
 
 ### 1. Install Jenkins on EC2 :
 
@@ -162,4 +163,45 @@ install following:
     sudo apt-get install docker.io
     sudo apt-get install docker-compose-v2 
     sudo usermod -aG docker $USER && newgrp docker 
+```
+
+### 10. Setting Up Agent Node in Jenkins
+![Screenshot(35)](https://github.com/user-attachments/assets/b3a8ec06-c1a4-459c-bddc-ff502ade3c71)
+![Screenshot(36)](https://github.com/user-attachments/assets/0d19084a-7fc9-4c4f-86cd-baa6aad2d6c6)
+
+### 11. Create SSH Key in master
+
+```
+ubuntu@ip-172-31-95-119:~$ cd ~/.ssh
+ubuntu@ip-172-31-95-119:~/.ssh$ ssh-keygen
+ubuntu@ip-172-31-95-119:~/.ssh$ ls
+authorized_keys  id_ed25519  id_ed25519.pub
+```
+
+Copy Private key in jenkins node
+
+```
+ubuntu@ip-172-31-95-119:~/.ssh$ cat id_ed25519
+```
+![Screenshot(37)](https://github.com/user-attachments/assets/317c5a78-1fa5-445d-a56f-93e3116c0db0)
+![Screenshot(38)](https://github.com/user-attachments/assets/e847a6d8-5545-43db-bcb7-4e1b79366f5a)
+
+Agent Mechine and Go to ===>> cd ~/.ssh folder
+
+Copy public key in the authorized_keys
+
+```
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDuD0Ynt0JGNd1tvLQJRpOd1AGOfpeZUDMTC81Vc90o5xcpsN86wxo2tlEg9WHZcaI2f6oBA/hcZlH05fQJEBaA9YZ4G2LOn4tKxjD+oPYHqjfaabzUYAW4JUNX3ByFBz8oR/swJnwwsTj9SgwCp+JxIJcE1hdn2AQLi5kA2Flt1ppDwpEklW/sNXKkJilr/44AHBjlk81lIOLt75lrSbdINw8RXPWA3321dOulJHX4P7chdtkug+HqU+CDa2rsSJ/7/QJCcOzaiSbhw+HlO88fc0nhPnQ5h0q6wxL/QvzTLzs0o+fitAuMivbolt3rJ9pLyCKDclOK4IL0EhobODyR jenkins-node-prom-graf
+
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIuaTMgACMWOjvE6FhmYNo43Ex/dkaFRjz2PLtqcdbsq ubuntu@ip-172-31-95-119
+```
+Check Agent / relaunch agent :
+
+![Screenshot(39)](https://github.com/user-attachments/assets/0f709e08-6c3e-47ff-81b1-d6e46f446f0a)
+
+Rerun . It will create folder in agent.
+
+```
+ubuntu@ip-172-31-86-235:~$ ls
+remoting  remoting.jar  workspace
 ```
