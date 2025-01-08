@@ -344,3 +344,65 @@ pipeline {
 }
 ```
 ### 13. Install and Integrate Sonarqube in Jenkins
+
+Update docker-compose.yml File.
+It will Create 2 container and 2 image
+Port : 9000
+1. sonarqube:latest
+2. postgres:13
+
+```yml
+services:
+  web:
+    build:
+      context: .
+    image: "maainul/notes-demo:latest"
+    ports:
+      - "8000:8000"
+  sonarqube:
+    image: sonarqube:latest
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonarqube
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonarpassword 
+    #   SONAR_SEARCH_JAVAOPTS: "-Xms256m -Xmx256m" # only for memory limit . remove if you have memory
+    # mem_limit: 700m # only for memory limit . remove if you have memory
+    # mem_reservation: 500m # only for memory limit . remove if you have memory
+
+    depends_on:
+      - postgres
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_extensions:/opt/sonarqube/extensions
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonarpassword
+      POSTGRES_DB: sonarqube
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  sonarqube_data:
+  sonarqube_logs:
+  sonarqube_extensions:
+  postgres_data:
+```
+Create Local and Generate tokens.
+
+![Screenshot(44)](https://github.com/user-attachments/assets/b3661b9d-2627-4c31-8281-5729b5ed5153)
+![Screenshot(45)](https://github.com/user-attachments/assets/112e80bb-cf6e-4e73-99f3-a63805931bcb)
+![Screenshot(46)](https://github.com/user-attachments/assets/2fe9accb-fc90-410e-8238-3a7b774ba05d)
+![Screenshot(47)](https://github.com/user-attachments/assets/88f9225f-9880-4a9e-92de-fb05475e5959)
+![Screenshot(48)](https://github.com/user-attachments/assets/8b46d8ed-5f70-47a1-a53e-ddf68017cda3)
+![Screenshot(49)](https://github.com/user-attachments/assets/9bb226f6-1ab3-4ddb-aed1-0915ccb2745a)
+![Screenshot(50)](https://github.com/user-attachments/assets/3b6ebf40-b0e7-458d-91d3-15f585729fff)
+
+
