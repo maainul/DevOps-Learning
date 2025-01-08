@@ -1,58 +1,45 @@
-@Library('Shared') _
 pipeline {
     agent { label "agent-1" }
-    tools { SonarScanner 'SonarScanner' } // Use the name configured in "Global Tool Configuration"
-    environment {
-        SONAR_HOST_URL = 'http://52.54.50.131:9000' // Replace with your SonarQube URL
-        SONAR_AUTH_TOKEN = credentials('sonar-token') // Jenkins credential ID for the token
+
+    tools {
+        nodejs "NodeJS"
     }
+
+    environment {
+        SONAR_URL = "http://52.54.50.131:9000"
+        SONAR_AUTH_TOKEN = "squ_47f2568a7ed72272174c06e5c61456c54d414961"
+        SONAR_PROJECT_KEY = "webapp"
+        SONAR_PROJECT_NAME = "webapp"
+    }
+
     stages {
-        stage('Code') {
+        stage('Checkout Code') {
             steps {
-                script{
-                    clone("https://github.com/maainul/jenkins-learning.git","master")
-                }
+                echo "Cloning the code..."
+                git url: "https://github.com/maainul/jenkins-learning.git", branch: "master"
+                echo "Code cloned successfully!"
             }
         }
+
+        stage('Install Dependencies') {
+            steps {
+                echo "Installing dependencies..."
+                sh 'npm install'
+                echo "Dependencies installed successfully!"
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sq1') { // Use the name from "SonarQube servers" config
-                    sh 'sonar-scanner \
-                        -Dsonar.projectKey=webapp \
-                        -Dsonar.sources=./src \
-                        -Dsonar.host.url=$SONAR_HOST_URL \
-                        -Dsonar.login=$SONAR_AUTH_TOKEN'
-                }
-            }
-        }
-        stage('Build') {
-            steps {
-                 script{
-                   docker_build("maainul","notes-demo","latest")
-               }
-            }
-        }
-        stage('Test') {
-            steps {
-                echo "Running tests..."
-                // Add test commands here if required
-                echo "Tests completed!"
-            }
-        }
-        stage('Deploy') {
-            steps {
-               echo "Stopping and removing existing containers..."
+                echo "Running SonarQube Analysis..."
                 sh '''
-                    # Stop all running containers
-                    docker ps -q | xargs -r docker stop
-                    # Remove all stopped containers
-                    docker ps -aq | xargs -r docker rm
+                    npx sonar-scanner \
+                        -Dsonar.projectKey=webapp \
+                        -Dsonar.projectName=webapp \
+                        -Dsonar.host.url=http://52.54.50.131:9000 \
+                        -Dsonar.login=squ_47f2568a7ed72272174c06e5c61456c54d414961
                 '''
-                echo "Existing containers stopped and removed."
-
-                echo "Deploying the application..."
-                sh 'docker compose up -d'
-                echo "Application deployed successfully!"
+                echo "SonarQube analysis completed successfully!"
             }
         }
     }
