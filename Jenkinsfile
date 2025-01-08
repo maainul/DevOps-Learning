@@ -1,12 +1,29 @@
 @Library('Shared') _
 pipeline {
     agent { label "agent-1" }
-
+    tools {
+        sonarScanner 'sonar' // Use the name configured in "Global Tool Configuration"
+    }
+    environment {
+        SONAR_HOST_URL = 'http://52.54.50.131:9000' // Replace with your SonarQube URL
+        SONAR_AUTH_TOKEN = credentials('sonar-token') // Jenkins credential ID for the token
+    }
     stages {
         stage('Code') {
             steps {
                 script{
                     clone("https://github.com/maainul/jenkins-learning.git","master")
+                }
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') { // Use the name from "SonarQube servers" config
+                    sh 'sonar-scanner \
+                        -Dsonar.projectKey=webapp \
+                        -Dsonar.sources=./src \
+                        -Dsonar.host.url=$SONAR_HOST_URL \
+                        -Dsonar.login=$SONAR_AUTH_TOKEN'
                 }
             }
         }
