@@ -1,26 +1,19 @@
+@Library('Shared') _
 pipeline {
     agent { label "agent-1" }
-
+    
     tools {
         nodejs "NodeJS"
     }
 
-    environment {
-        SONAR_URL = "http://52.54.50.131:9000"
-        SONAR_AUTH_TOKEN = "squ_47f2568a7ed72272174c06e5c61456c54d414961"
-        SONAR_PROJECT_KEY = "webapp"
-        SONAR_PROJECT_NAME = "webapp"
-    }
-
     stages {
-        stage('Checkout Code') {
+        stage('Code') {
             steps {
-                echo "Cloning the code..."
-                git url: "https://github.com/maainul/jenkins-learning.git", branch: "master"
-                echo "Code cloned successfully!"
+                script{
+                    clone("https://github.com/maainul/jenkins-learning.git","master")
+                }
             }
         }
-
         stage('Install Dependencies') {
             steps {
                 echo "Installing dependencies..."
@@ -40,6 +33,36 @@ pipeline {
                         -Dsonar.token=squ_47f2568a7ed72272174c06e5c61456c54d414961
                 '''
                 echo "SonarQube analysis completed successfully!"
+            }
+        }
+        stage('Build') {
+            steps {
+                 script{
+                   docker_build("maainul","notes-demo","latest")
+               }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo "Running tests..."
+                // Add test commands here if required
+                echo "Tests completed!"
+            }
+        }
+        stage('Deploy') {
+            steps {
+               echo "Stopping and removing existing containers..."
+                sh '''
+                    # Stop all running containers
+                    docker ps -q | xargs -r docker stop
+                    # Remove all stopped containers
+                    docker ps -aq | xargs -r docker rm
+                '''
+                echo "Existing containers stopped and removed."
+
+                echo "Deploying the application..."
+                sh 'docker compose up -d'
+                echo "Application deployed successfully!"
             }
         }
     }

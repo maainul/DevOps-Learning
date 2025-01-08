@@ -405,4 +405,59 @@ Create Local and Generate tokens.
 ![Screenshot(49)](https://github.com/user-attachments/assets/9bb226f6-1ab3-4ddb-aed1-0915ccb2745a)
 ![Screenshot(50)](https://github.com/user-attachments/assets/3b6ebf40-b0e7-458d-91d3-15f585729fff)
 
+update Jenkinsfile
+
+```groovy
+pipeline {
+    agent { label "agent-1" }
+
+    tools {
+        nodejs "NodeJS"
+    }
+
+    environment {
+        SONAR_URL = "http://52.54.50.131:9000"
+        SONAR_AUTH_TOKEN = "squ_47f2568a7ed72272174c06e5c61456c54d414961"
+        SONAR_PROJECT_KEY = "webapp"
+        SONAR_PROJECT_NAME = "webapp"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                echo "Cloning the code..."
+                git url: "https://github.com/maainul/jenkins-learning.git", branch: "master"
+                echo "Code cloned successfully!"
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                echo "Installing dependencies..."
+                sh 'npm install'
+                echo "Dependencies installed successfully!"
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                echo "Running SonarQube Analysis..."
+                sh '''
+                    npx sonar-scanner \
+                        -Dsonar.projectKey=webapp \
+                        -Dsonar.projectName=webapp \
+                        -Dsonar.host.url=http://52.54.50.131:9000 \
+                        -Dsonar.token=squ_47f2568a7ed72272174c06e5c61456c54d414961
+                '''
+                echo "SonarQube analysis completed successfully!"
+            }
+        }
+    }
+}
+```
+Add plugins nodejs as well and global variable System.
+
+
+
+
 
