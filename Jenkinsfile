@@ -1,9 +1,10 @@
 @Library('Shared') _
 pipeline {
     agent { label "agent-1" }
-    tools {
-        sonarScanner 'SonarScanner' // Use the name configured in "Global Tool Configuration"
-    }
+    tools { sonarScanner 'SonarScanner' }
+    // tools {
+    //     sonarScanner 'SonarScanner' // Use the name configured in "Global Tool Configuration"
+    // }
     environment {
         SONAR_HOST_URL = 'http://52.54.50.131:9000' // Replace with your SonarQube URL
         SONAR_AUTH_TOKEN = credentials('sonar-token') // Jenkins credential ID for the token
