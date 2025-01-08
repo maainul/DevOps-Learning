@@ -37,7 +37,7 @@ pipeline {
                         -Dsonar.projectKey=webapp \
                         -Dsonar.projectName=webapp \
                         -Dsonar.host.url=http://52.54.50.131:9000 \
-                        -Dsonar.login=squ_47f2568a7ed72272174c06e5c61456c54d414961
+                        -Dsonar.token=squ_47f2568a7ed72272174c06e5c61456c54d414961
                 '''
                 echo "SonarQube analysis completed successfully!"
             }
