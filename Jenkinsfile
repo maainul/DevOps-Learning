@@ -16,7 +16,7 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') { // Use the name from "SonarQube servers" config
+                withSonarQubeEnv('sq1') { // Use the name from "SonarQube servers" config
                     sh 'sonar-scanner \
                         -Dsonar.projectKey=webapp \
                         -Dsonar.sources=./src \
