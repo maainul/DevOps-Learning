@@ -1,6 +1,6 @@
 @Library('Shared') _
 pipeline {
-    agent { label "mainul" }
+    agent { label "agent-1" }
 
     stages {
         stage('Code') {
