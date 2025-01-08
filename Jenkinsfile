@@ -2,7 +2,7 @@
 pipeline {
     agent { label "agent-1" }
     tools {
-        sonar 'SonarScanner' // Use the name configured in "Global Tool Configuration"
+        sonarScanner 'SonarScanner' // Use the name configured in "Global Tool Configuration"
     }
     environment {
         SONAR_HOST_URL = 'http://52.54.50.131:9000' // Replace with your SonarQube URL
