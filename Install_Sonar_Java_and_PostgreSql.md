@@ -1,3 +1,4 @@
+# REFERENCE : https://baraqheart.medium.com/install-sonarqube-on-ubuntu-machine-1c1eb4002ab6
 ## STEP 1: Install dependencies: JAVA
 
 	sudo apt update
