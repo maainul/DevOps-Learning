@@ -1,4 +1,5 @@
 # REFERENCE : https://baraqheart.medium.com/install-sonarqube-on-ubuntu-machine-1c1eb4002ab6
+
 ## STEP 1: Install dependencies: JAVA
 
 	sudo apt update
@@ -51,8 +52,6 @@
 
 	\d tablename
 
-
-
 ## STEP 3: Install and Configure SonarQube
 
 	sudo apt update && sudo apt install wget unzip -y
@@ -67,6 +66,7 @@
 	sudo chown -R :sonar /opt/sonarqube
 
 	sudo nano /opt/sonarqube/conf/sonar.properties
+	
 ### Uncomment those lines:
 
 	sonar.jdbc.username=sonar
@@ -108,3 +108,116 @@
 	sudo sysctl -w fs.file-max=131072
 	ulimit -n 131072
 	ulimit -u 8192
+	
+	
+
+# For Windows How to Download in local Machine:
+
+https://www.sonarsource.com/products/sonarqube/downloads/
+
+https://docs.sonarsource.com/sonarqube-server/10.4/analyzing-source-code/scanners/sonarscanner/
+
+https://www.openlogic.com/openjdk-downloads?field_java_parent_version_target_id=807&field_operating_system_target_id=436&field_architecture_target_id=391&field_java_package_target_id=396
+
+
+### downloads and unzip folder
+
+
+https://github.com/maainul/java-sonarqube-helloworld-src.git
+
+## Clone Code 
+
+	git clone https://github.com/maainul/java-sonarqube-helloworld-src.git
+	
+	
+## Scanner link 
+
+
+0. Update sonar-scanner property \sonar.properties file
+
+	E:\sonar-scanner\conf\sonar-scanner
+	
+	sonar.host.url=http://192.168.0.104:9000
+
+
+1. Run Sonar Server :
+
+	E:/bin/windows-x86-64 > StartSonar.bat start
+	
+2. Run Sonar Scanner:
+    
+	Go this location :  E:\java-sonarqube-helloworld-src 
+	
+3. and paste this
+	
+	E:\sonar-scanner\bin\sonar-scanner.bat
+
+4. After success. Projects is available. : http://192.168.0.104:9000/projects
+
+
+## Create Own Rules :
+
+Go to Quality Gate and Create New.
+We can give rules based on team requirements.
+
+## Create User and Role :
+User Creation : Administration > Security > Users
+
+## How to Use maven and Gradle
+
+### How to analysis with maven
+
+1. Need this code in the pom.xml
+	
+2. pom.xml
+
+	Udpage property file
+	
+	   <properties>
+			<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+			<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+			<maven.compiler.release>11</maven.compiler.release>
+			<!-- <sonar.projectKey>your_project_key</sonar.projectKey> -->
+			<sonar.host.url>http://192.168.124.21:9000</sonar.host.url>
+			<sonar.login>admin</sonar.login> <!-- Replace with your username -->
+		</properties>
+
+
+update plugin if not given
+
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>3.10.0.2594</version>
+        </plugin>
+
+Test Coverage :
+
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.11</version>
+        </plugin>
+	
+	mvn clean verify sonar:sonar -Dsonar.token=myAuthenticationToken
+	
+	mvn clean verify sonar:sonar -Dsonar.login=admin -Dsonar.password=123
+
+	mvn sonar:sonar -Dsonar.login=<your-token>
+
+	mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=123
+
+	mvn clean verify sonar:sonar
+
+
+### How to analysis with Gradle
+
+	gradle task --all
+
+	gradle sonarqube
+
+	gradle -v
+
+
+### How to analysis with jenkins
+
