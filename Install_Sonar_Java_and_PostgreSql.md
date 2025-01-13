@@ -208,6 +208,8 @@ https://www.sonarsource.com/products/sonarqube/downloads/
 
 https://docs.sonarsource.com/sonarqube-server/10.4/analyzing-source-code/scanners/sonarscanner/
 
+https://docs.sonarsource.com/sonarqube-server/9.9/analyzing-source-code/scanners/sonarscanner/
+
 https://www.openlogic.com/openjdk-downloads?field_java_parent_version_target_id=807&field_operating_system_target_id=436&field_architecture_target_id=391&field_java_package_target_id=396
 
 ### downloads and unzip folder
