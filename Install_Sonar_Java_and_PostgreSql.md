@@ -59,6 +59,10 @@
 	cd /opt/
 	sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.3.79811.zip
     sudo unzip sonarqube-9.9.3.79811.zip
+
+        sudo unzip sonarqube-9.9.3.79811.zip
+
+        sudo mv sonarqube-9.9.3.79811 sonarqube
 	
 	sudo groupadd sonar
 
@@ -75,6 +79,8 @@
 ### Add this line #RUN_AS_USER= and replace as below
 
 	sudo nano /opt/sonarqube/bin/linux-x86-64/sonar.sh
+
+ RUN_AS_USER=sonar
 
 	sudo nano /etc/systemd/system/sonar.service
 	
