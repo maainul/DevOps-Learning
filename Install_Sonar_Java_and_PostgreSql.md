@@ -58,7 +58,6 @@
 	
 	cd /opt/
 	sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.3.79811.zip
-    sudo unzip sonarqube-9.9.3.79811.zip
 
         sudo unzip sonarqube-9.9.3.79811.zip
 
@@ -66,7 +65,8 @@
 	
 	sudo groupadd sonar
 
-	sudo usermod -aG sonar sonar
+	sudo usermod -g sonar -d /opt/sonarqube sonar
+ 
 	sudo chown -R :sonar /opt/sonarqube
 
 	sudo nano /opt/sonarqube/conf/sonar.properties
