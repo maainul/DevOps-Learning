@@ -110,6 +110,107 @@
 	ulimit -u 8192
 	
 	
+# Docker 
+
+## To install SonarQube and PostgreSQL using Docker, follow these steps:
+
+
+1. Create a Docker Compose File
+
+Create a docker-compose.yml file in your project directory with the following content:
+
+```yml
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: sonarqube-postgres
+    environment:
+      POSTGRES_USER: sonarqube
+      POSTGRES_PASSWORD: sonarqube
+      POSTGRES_DB: sonarqube
+    volumes:
+      - sonarqube_db_data:/var/lib/postgresql/data
+    networks:
+      - sonarqube-network
+
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    depends_on:
+      - postgres
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonarqube
+      SONAR_JDBC_USERNAME: sonarqube
+      SONAR_JDBC_PASSWORD: sonarqube
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_extensions:/opt/sonarqube/extensions
+    networks:
+      - sonarqube-network
+
+volumes:
+  sonarqube_db_data:
+  sonarqube_data:
+  sonarqube_logs:
+  sonarqube_extensions:
+
+networks:
+  sonarqube-network:
+
+
+'''yml
+
+
+2. Start the Services
+
+
+Run the following command to start SonarQube and PostgreSQL:
+
+    docker-compose up -d
+
+This will:
+
+Pull the necessary Docker images (sonarqube:community and postgres:15).
+
+Start the containers for both services.
+
+
+---
+
+3. Access SonarQube
+
+1. Open your browser and navigate to http://localhost:9000.
+
+
+2. The default credentials are:
+
+Username: admin
+
+Password: admin
+
+
+
+4. Verify Everything Works
+
+Ensure both containers (sonarqube and sonarqube-postgres) are running:
+
+docker ps -a
+
+Check logs for troubleshooting:
+
+docker logs sonarqube
+docker logs sonarqube-postgres
+
+
+
+5. Persist Data
+
+The volumes (sonarqube_db_data, sonarqube_data, etc.) ensure that data persists even if containers are restarted or removed.
+
 
 # For Windows How to Download in local Machine:
 
