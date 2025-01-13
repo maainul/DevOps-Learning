@@ -114,7 +114,6 @@
 
 ## To install SonarQube and PostgreSQL using Docker, follow these steps:
 
-
 1. Create a Docker Compose File
 
 Create a docker-compose.yml file in your project directory with the following content:
@@ -161,12 +160,9 @@ volumes:
 networks:
   sonarqube-network:
 
-
-'''yml
-
+```
 
 2. Start the Services
-
 
 Run the following command to start SonarQube and PostgreSQL:
 
@@ -178,13 +174,9 @@ Pull the necessary Docker images (sonarqube:community and postgres:15).
 
 Start the containers for both services.
 
-
----
-
 3. Access SonarQube
 
 1. Open your browser and navigate to http://localhost:9000.
-
 
 2. The default credentials are:
 
@@ -198,14 +190,12 @@ Password: admin
 
 Ensure both containers (sonarqube and sonarqube-postgres) are running:
 
-docker ps -a
+	docker ps -a
 
 Check logs for troubleshooting:
 
-docker logs sonarqube
-docker logs sonarqube-postgres
-
-
+	docker logs sonarqube
+	docker logs sonarqube-postgres
 
 5. Persist Data
 
@@ -220,9 +210,7 @@ https://docs.sonarsource.com/sonarqube-server/10.4/analyzing-source-code/scanner
 
 https://www.openlogic.com/openjdk-downloads?field_java_parent_version_target_id=807&field_operating_system_target_id=436&field_architecture_target_id=391&field_java_package_target_id=396
 
-
 ### downloads and unzip folder
-
 
 https://github.com/maainul/java-sonarqube-helloworld-src.git
 
