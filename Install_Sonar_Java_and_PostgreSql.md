@@ -114,8 +114,15 @@
 	sudo sysctl -w fs.file-max=131072
 	ulimit -n 131072
 	ulimit -u 8192
-	
-	
+ 
+### Enable and start the service
+
+	sudo systemctl start sonar
+	sudo systemctl enable sonar	
+
+ 	sudo systemctl status sonar
+
+ 
 # Docker 
 
 ## To install SonarQube and PostgreSQL using Docker, follow these steps:
