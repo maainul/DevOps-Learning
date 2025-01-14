@@ -61,3 +61,114 @@ sonar-scanner
 2. Log in to SonarQube using your admin credentials or the token if required.
 
 3. Once the scanner completes, the project should appear in the dashboard. Click on the project to view the detailed analysis results.
+
+
+
+# Run Node Js 
+
+To analyze a Node.js project using SonarQube, follow these steps:
+
+---
+
+### **1. Prerequisites**
+Ensure the following are installed:
+- SonarQube server is running and accessible.
+- SonarScanner is installed on your system.
+- Node.js and your project dependencies are installed.
+
+---
+
+### **2. Navigate to Your Node.js Project**
+Change to the directory of your Node.js project:
+```bash
+cd /path/to/your/node-project
+```
+
+---
+
+### **3. Install the `sonar-scanner` Globally (Optional)**
+If `sonar-scanner` is not already installed or accessible, you can install it:
+```bash
+sudo npm install -g sonar-scanner
+```
+
+---
+
+### **4. Create a `sonar-project.properties` File**
+Inside your project directory, create a `sonar-project.properties` file:
+```bash
+nano sonar-project.properties
+```
+
+Add the following content, customizing it to your project:
+```properties
+# Required project metadata
+sonar.projectKey=my-nodejs-project
+sonar.projectName=My Node.js Project
+sonar.projectVersion=1.0
+
+# SonarQube server URL
+sonar.host.url=http://<your_sonarqube_server>:9000
+
+# Authentication token
+sonar.login=<your_sonar_token>
+
+# Project source files
+sonar.sources=.
+sonar.exclusions=node_modules/**,dist/**
+
+# Language-specific properties (JavaScript/Node.js)
+sonar.language=js
+sonar.javascript.lcov.reportPaths=coverage/lcov.info
+```
+
+**Key Points:**
+- Replace `<your_sonarqube_server>` with your SonarQube server's IP or hostname.
+- Replace `<your_sonar_token>` with the authentication token generated in SonarQube.
+- Exclude folders like `node_modules` or `dist` to avoid analyzing unnecessary files.
+
+---
+
+### **5. Generate Code Coverage (Optional but Recommended)**
+SonarQube benefits from code coverage information. To generate a coverage report:
+1. Install a test runner like Jest or Mocha if not already installed:
+   ```bash
+   npm install --save-dev jest
+   ```
+2. Update the `package.json` to include a script for coverage:
+   ```json
+   "scripts": {
+     "test": "jest --coverage"
+   }
+   ```
+3. Run the tests to generate a coverage report:
+   ```bash
+   npm test
+   ```
+4. Verify that the `coverage/lcov.info` file is generated.
+
+
+### **6. Run the SonarScanner**
+Execute the SonarScanner in your project directory:
+```bash
+sonar-scanner
+```
+
+### **7. View Results in SonarQube**
+1. Open your browser.
+2. Navigate to your SonarQube server (`http://<your_sonarqube_server>:9000`).
+3. Log in and search for your project (`my-nodejs-project`) in the dashboard.
+
+
+### **Example Directory Structure**
+```plaintext
+my-node-project/
+├── sonar-project.properties
+├── package.json
+├── node_modules/
+├── src/
+├── tests/
+└── coverage/
+    └── lcov.info
+```
+
