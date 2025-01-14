@@ -267,7 +267,75 @@ SonarQube uses Elasticsearch, which requires some system configuration changes.
 ---
 
 This should give you a working SonarQube installation on Ubuntu with PostgreSQL, running under the `sonar` user. Let me know if you encounter any issues during the setup!
+Yes, to analyze code with SonarQube, you also need **SonarScanner** (or an equivalent scanner tool). Here's why:
 
+---
+
+### **Why Do You Need SonarScanner?**
+- **SonarQube** is the server that stores and processes the analysis results.
+- **SonarScanner** is the tool used to analyze your source code and send the analysis results to the SonarQube server.
+
+Without a scanner, SonarQube will not receive code metrics or analysis data, and you won't be able to view reports on the dashboard.
+
+---
+
+### **How to Install SonarScanner on Ubuntu?**
+Follow these steps to install and configure **SonarScanner** on your Ubuntu system:
+
+#### **1. Download SonarScanner**
+Run the following commands to download and extract SonarScanner:
+```bash
+cd /opt
+sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+sudo unzip sonar-scanner-cli-5.0.1.3006-linux.zip
+sudo mv sonar-scanner-5.0.1.3006-linux sonar-scanner
+```
+
+#### **2. Configure SonarScanner**
+Edit the configuration file to set the `sonar.host.url` to point to your SonarQube server:
+```bash
+sudo nano /opt/sonar-scanner/conf/sonar-scanner.properties
+```
+
+Add or update the following line:
+```properties
+sonar.host.url=http://localhost:9000
+```
+
+Save and exit the file.
+
+#### **3. Add SonarScanner to PATH**
+Add SonarScanner to the system PATH to make it accessible from anywhere:
+```bash
+echo 'export PATH=$PATH:/opt/sonar-scanner/bin' >> ~/.bashrc
+source ~/.bashrc
+```
+
+#### **4. Verify Installation**
+Run the following command to verify that SonarScanner is installed correctly:
+```bash
+sonar-scanner --version
+```
+
+---
+
+### **How to Use SonarScanner?**
+1. Navigate to your project's root directory.
+2. Create a `sonar-project.properties` file with your project configuration:
+   ```properties
+   sonar.projectKey=your_project_key
+   sonar.projectName=Your Project Name
+   sonar.projectVersion=1.0
+   sonar.sources=.
+   sonar.host.url=http://localhost:9000
+   sonar.login=your_sonarqube_token
+   ```
+   Replace `your_project_key`, `your_project_name`, and `your_sonarqube_token` with your values.
+
+3. Run the scanner:
+   ```bash
+   sonar-scanner
+   ```
  
 # Docker 
 
