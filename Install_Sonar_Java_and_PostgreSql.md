@@ -273,6 +273,10 @@ This should give you a working SonarQube installation on Ubuntu with PostgreSQL,
 
 ## To install SonarQube and PostgreSQL using Docker, follow these steps:
 
+    sudo apt-get install docker.io
+    sudo apt-get install docker-compose-v2 
+    sudo usermod -aG docker $USER && newgrp docker 
+
 1. Create a Docker Compose File
 
 Create a docker-compose.yml file in your project directory with the following content:
