@@ -114,8 +114,6 @@ Build a CI/CD pipeline for a real-world project:
 
 ---
 
-Would you like detailed guides for any specific day? Let me know!
-
 ### **Day 1: Foundations of Jenkins**  
 
 #### **Objective**:  
