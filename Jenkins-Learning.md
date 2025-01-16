@@ -1,6 +1,4 @@
-If you want a **comprehensive and intensive Jenkins learning plan**, this 1-week routine ensures you cover everything essential for mastering Jenkins, from basics to advanced CI/CD practices:
-
----
+# Jenkins learning plan
 
 ### **Day 1: Foundations of Jenkins**  
 - **Learn**:  
