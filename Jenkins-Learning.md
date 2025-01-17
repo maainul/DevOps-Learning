@@ -318,6 +318,8 @@ Master Jenkins installation, environment setup, and advanced configuration to en
    - Install the **Role-Based Authorization Strategy Plugin**.  
    - Create roles (e.g., Admin, Developer, Viewer) and assign users accordingly.
 
+Ref : https://youtu.be/LJru4bq9yVY?si=skG-e8sDUgP9yljN
+
 4. **Enable HTTPS**:
    - Generate a self-signed SSL certificate:  
      ```bash
