@@ -365,6 +365,7 @@ Ref : https://youtu.be/LJru4bq9yVY?si=skG-e8sDUgP9yljN
 ##### **c. Configure Alerts**  
 - Use the **Email Extension Plugin** to set up email alerts for job failures.  
 
+#### **d. Ref.** https://youtu.be/Vwo8zV8zmQU?si=SHR-qc-jQjftZDLt
 ---
 
 ### **4. Backup and Recovery**  
