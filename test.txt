@@ -1,4 +1,0 @@
-sonar.projectKey=webapp
-sonar.host.url=http://52.54.50.131:9000
-sonar.login=admin
-sonar.password=Mainul+Kusum1
