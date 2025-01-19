@@ -8,8 +8,7 @@ pipeline {
     environment{
         SONARQUBE_SERVER = 'SonarQube'
         SCANNER_HOME = tool 'SonarQube Scanner'
-        DOCKER_REGISTRY='maainul'
-        DOCKER_IMAGE='nodejs-with-test'
+        DOCKER_IMAGE='maainul/nodejs-with-test'
         DOCKER_TAG='latest'
     }
     stages {
@@ -57,7 +56,7 @@ pipeline {
         }      
         stage('Build') {
             steps {
-                sh 'docker build -t nodejs-with-test:latest .'
+                sh 'docker build -t maainul/nodejs-with-test:latest .'
             }
         }
         stage('TRIVY FS SCAN') {
@@ -72,14 +71,14 @@ pipeline {
                     passwordVariable: "dockerHubPass",
                     usernameVariable: 'dockerHubUser')]) {
                         sh 'docker login -u ${dockerHubUser} -p ${dockerHubPass}'
-                        sh 'docker push ${dockerHubUser}/nodejs-with-test:latest'
+                        sh 'docker push maainul/nodejs-with-test:latest'
                 }
             }
         }
         stage('TRIVY IMAGE SCAN') {
             steps {
                 sh """
-                trivy image --severity CRITICAL,HIGH nodejs-with-test:latest || echo "Trivy image scan completed."
+                trivy image --severity CRITICAL,HIGH maainul/nodejs-with-test:latest || echo "Trivy image scan completed."
                 """
             }
         }
