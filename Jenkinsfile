@@ -10,7 +10,7 @@ pipeline {
         stage('Code') {
             steps {
                 script{
-                    clone("https://github.com/maainul/jenkins-learning.git","master")
+                    clone("https://github.com/maainul/DevOps-Learning.git","master")
                 }
             }
         }
