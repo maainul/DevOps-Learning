@@ -19,7 +19,7 @@ app.get("/f1", async (req, res) => {
 app.get("/get", async (req, res) => {
     return res.json({
         status: 201,
-        body: "Get Messag",
+        body: "Get Message",
     });
 });
 
