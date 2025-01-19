@@ -8,6 +8,9 @@ pnpm-debug.log*
 lerna-debug.log*
 package-lock.json
 
+Docker
+Jenkins
+SonarQube
 node_modules
 dist
 dist-ssr
