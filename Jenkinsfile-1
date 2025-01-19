@@ -72,14 +72,14 @@ pipeline {
                     passwordVariable: "dockerHubPass",
                     usernameVariable: 'dockerHubUser')]) {
                         sh 'docker login -u ${dockerHubUser} -p ${dockerHubPass}'
-                        sh 'docker push ${dockerHubUser}/${env.DOCKER_IMAGE}:${env.DOCKER_TAG}'
+                        sh 'docker push ${dockerHubUser}/nodejs-with-test:latest'
                 }
             }
         }
         stage('TRIVY IMAGE SCAN') {
             steps {
                 sh """
-                trivy image --severity CRITICAL,HIGH ${env.DOCKER_IMAGE}:${env.DOCKER_TAG} || echo "Trivy image scan completed."
+                trivy image --severity CRITICAL,HIGH nodejs-with-test:latest || echo "Trivy image scan completed."
                 """
             }
         }
