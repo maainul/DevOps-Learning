@@ -1,0 +1,111 @@
+pipeline {
+    agent any
+
+    tools {
+            jdk 'jdk17'
+            nodejs 'node13'
+    }
+    environment{
+        SONARQUBE_SERVER = 'SonarQube'
+        SCANNER_HOME = tool 'SonarQube Scanner'
+        DOCKER_REGISTRY='maainul'
+        DOCKER_IMAGE='nodejs-with-test'
+        DOCKER_TAG='latest'
+    }
+
+
+    stages {
+        stage('Code') {
+            steps {
+                echo "Cloning the code..."
+                git url: "https://github.com/maainul/DevOps-Learning.git", branch: "master"
+                echo "Code cloned successfully!"
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                echo "install dependencies..............."
+                sh "npm install"
+                echo "install dependencies completed.....!"
+            }
+        }
+        stage('Test') {
+            steps {
+                echo "Running Tests..............."
+                sh "npm test"
+                echo "Test completed...............!"
+            }
+        }
+
+
+        stage('SonarQube Analysis') {
+            steps {
+                // Debug to verify scanner path
+                script {
+                    echo "SonarQube Scanner Path: ${SCANNER_HOME}"
+                }
+                withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                    sh """
+                    ${SCANNER_HOME}/bin/sonar-scanner \
+                      -Dsonar.projectKey="nodejs-with-test" \
+                      -Dsonar.projectName="Nodejs With Test(Backend)" \
+                      -Dsonar.projectVersion="1.0" \
+                      -Dsonar.sources="." \
+                      -Dsonar.exclusions="**/node_modules/**,**/dist/**,**/*.test.js,**/*.spec.js,**/coverage/**,**/logs/**" \
+                      -Dsonar.javascript.lcov.reportPaths="coverage/lcov.info" \
+                      -Dsonar.host.url="http://52.200.14.141:9000" \
+                      -Dsonar.login="sqa_86faab3142f735e98b0814e4bb782cfbdd487fb3"
+                    """
+                }
+            }
+        }
+        stage('TRIVY FS SCAN') {
+            steps {
+                sh "trivy fs ."
+            }
+        }
+        stage('Push') {
+            steps {
+                echo "Pushing ....."
+                withCredentials([usernamePassword(
+                    credentialsId: "docker-hub-cred",
+                    passwordVariable: "dockerHubPass",
+                    usernameVariable: 'dockerHubUser')]) {
+                        sh 'docker login -u ${dockerHubUser} -p ${dockerHubPass}'
+                        sh 'docker image tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                        sh 'docker push ${dockerHubUser}/${DOCKER_IMAGE}:${DOCKER_TAG}'
+                    }
+                echo "Push completed!"
+            }
+        }
+        stage('Build') {
+            steps {
+                echo "Building the Docker image........."
+                sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
+                echo "Docker image built successfully!..."
+            }
+        }
+        stage('TRIVY IMAGE SCAN') {
+            steps {
+                sh """
+                trivy image --severity CRITICAL,HIGH ${DOCKER_IMAGE}:${DOCKER_TAG} || echo "Trivy scan completed with vulnerabilities."
+                """
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo "Stopping and removing existing containers..."
+                sh '''
+                    # Stop all running containers
+                    docker ps -q | xargs -r docker stop
+                    # Remove all stopped containers
+                    docker ps -aq | xargs -r docker rm
+                    docker image prune -f
+                '''
+                echo "Existing containers stopped and removed."
+                echo "Deploying the application..."
+                sh 'docker compose up -d'
+            }
+        }
+    }
+}
