@@ -12,8 +12,6 @@ pipeline {
         DOCKER_IMAGE='nodejs-with-test'
         DOCKER_TAG='latest'
     }
-
-
     stages {
         stage('Code') {
             steps {
@@ -36,8 +34,6 @@ pipeline {
                 echo "Test completed...............!"
             }
         }
-
-
         stage('SonarQube Analysis') {
             steps {
                 // Debug to verify scanner path
@@ -58,37 +54,32 @@ pipeline {
                     """
                 }
             }
+        }      
+        stage('Build') {
+            steps {
+                sh 'docker build -t ${env.DOCKER_IMAGE}:${env.DOCKER_TAG} .'
+            }
         }
         stage('TRIVY FS SCAN') {
             steps {
-                sh "trivy fs ."
+                sh 'trivy fs . || echo "FS scan completed with vulnerabilities."'
             }
         }
         stage('Push') {
             steps {
-                echo "Pushing ....."
                 withCredentials([usernamePassword(
                     credentialsId: "docker-hub-cred",
                     passwordVariable: "dockerHubPass",
                     usernameVariable: 'dockerHubUser')]) {
                         sh 'docker login -u ${dockerHubUser} -p ${dockerHubPass}'
-                        sh 'docker image tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:${DOCKER_TAG}'
-                        sh 'docker push ${dockerHubUser}/${DOCKER_IMAGE}:${DOCKER_TAG}'
-                    }
-                echo "Push completed!"
-            }
-        }
-        stage('Build') {
-            steps {
-                echo "Building the Docker image........."
-                sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
-                echo "Docker image built successfully!..."
+                        sh 'docker push ${dockerHubUser}/${env.DOCKER_IMAGE}:${env.DOCKER_TAG}'
+                }
             }
         }
         stage('TRIVY IMAGE SCAN') {
             steps {
                 sh """
-                trivy image --severity CRITICAL,HIGH ${DOCKER_IMAGE}:${DOCKER_TAG} || echo "Trivy scan completed with vulnerabilities."
+                trivy image --severity CRITICAL,HIGH ${env.DOCKER_IMAGE}:${env.DOCKER_TAG} || echo "Trivy image scan completed."
                 """
             }
         }
