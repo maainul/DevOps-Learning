@@ -48,7 +48,7 @@ pipeline {
                       -Dsonar.sources="." \
                       -Dsonar.exclusions="**/node_modules/**,**/dist/**,**/*.test.js,**/*.spec.js,**/coverage/**,**/logs/**" \
                       -Dsonar.javascript.lcov.reportPaths="coverage/lcov.info" \
-                      -Dsonar.host.url="http://52.200.14.141:9000" \
+                      -Dsonar.host.url="http://34.224.64.171:9000" \
                       -Dsonar.login="sqa_86faab3142f735e98b0814e4bb782cfbdd487fb3"
                     """
                 }
