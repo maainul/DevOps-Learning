@@ -27,10 +27,7 @@ pipeline {
             }
         }
         stage('Test') {
-            steps {
-                echo "Running Tests..............."
                 sh "npm test"
-                echo "Test completed...............!"
             }
         }
         stage('SonarQube Analysis') {
