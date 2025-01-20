@@ -32,7 +32,6 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                // Debug to verify scanner path
                 script {
                     echo "SonarQube Scanner Path: ${SCANNER_HOME}"
                 }
