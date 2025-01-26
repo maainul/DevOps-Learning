@@ -20,7 +20,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_22" {
   to_port           = 22
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_22" {
+resource "aws_vpc_security_group_ingress_rule" "allow_8080" {
   security_group_id = aws_instance.webapp_instance.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "tpc"
@@ -28,7 +28,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_22" {
   to_port           = 8080
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_22" {
+resource "aws_vpc_security_group_ingress_rule" "allow_443" {
   security_group_id = aws_instance.webapp_instance.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "tpc"
