@@ -59,6 +59,7 @@ resource "aws_route_table_association" "dev-public-2-a" {
   route_table_id = aws_route_table.dev-public.id
 }
 
+# Ec2 Instance
 resource "aws_instance" "public_instance_1" {
   ami           = "ami-0e1bed4f06a3b463d"
   instance_type = "t2.micro"
