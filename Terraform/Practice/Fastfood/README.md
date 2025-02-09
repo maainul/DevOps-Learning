@@ -28,11 +28,6 @@ terraform/
 │── versions.tf
 
 
-AKIA2YICALNPY6ESAGUZ
-
-S1BOeVB/jTRFpHmN3gJAEL8/jR0ir251q9kPAUTk
-
-
 
 resource "aws_instance" "backend" {
   ami             = "ami-0c55b159cbfafe1f0" # Update with a valid AMI
