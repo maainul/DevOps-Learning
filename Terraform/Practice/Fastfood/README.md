@@ -1,5 +1,3 @@
-
-
 terraform/
 │── environments/
 │   ├── dev/
@@ -27,46 +25,3 @@ terraform/
 │── providers.tf
 │── versions.tf
 
-
-
-resource "aws_instance" "backend" {
-  ami             = "ami-0c55b159cbfafe1f0" # Update with a valid AMI
-  instance_type   = "t2.micro"
-  subnet_id       = module.network.private_subnet_id
-  security_groups = [module.network.backend_sg_id]
-  key_name        = "fast-food"
-
-  # user_data = <<-EOF
-  #             #!/bin/bash
-  #             sudo apt update -y
-  #             sudo apt install -y docker.io
-  #             sudo systemctl start docker
-  #             sudo systemctl enable docker
-  #             sudo docker run -d -p 3000:3000 my-backend-app
-  #             EOF
-
-  tags = {
-    Name = "${var.env}-backend-instance"
-  }
-}
-
-resource "aws_instance" "frontend" {
-  ami             = "ami-0c55b159cbfafe1f0" # Update with a valid AMI
-  instance_type   = "t2.micro"
-  subnet_id       = module.network.public_subnet_id
-  security_groups = [module.network.frontend_sg_id]
-  key_name        = "fast-food" # Added key for SSH access if needed
-
-  # user_data = <<-EOF
-  #             #!/bin/bash
-  #             sudo apt update -y
-  #             sudo apt install -y docker.io
-  #             sudo systemctl start docker
-  #             sudo systemctl enable docker
-  #             sudo docker run -d -p 80:3000 my-frontend-app
-  #             EOF
-
-  tags = {
-    Name = "${var.env}-frontend-instance"
-  }
-}
