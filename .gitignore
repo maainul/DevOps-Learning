@@ -7,17 +7,12 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 package-lock.json
-
-coverage
-Docker
-Jenkins
-SonarQube
 node_modules
 
 dist
 dist-ssr
 *.local
-
+coverage
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
