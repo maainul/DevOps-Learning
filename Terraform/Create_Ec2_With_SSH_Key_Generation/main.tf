@@ -1,5 +1,3 @@
-
-
 resource "tls_private_key" "terraform_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
