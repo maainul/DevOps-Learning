@@ -568,3 +568,19 @@ variable "private_subnet_cidr_blocks" {
   - Private subnets: `10.2.4.0/24`, `10.2.5.0/24`
 
 ---
+
+## Destroy resources
+
+```sh
+terraform destroy -var="env=dev" -state=terraform-dev.tfstate
+terraform destroy -var="env=staging" -state=terraform-staging.tfstate
+terraform destroy -var="env=prod" -state=terraform-prod.tfstate
+
+```
+
+## Destroy Everything in One Command (Caution!)
+```sh
+terraform destroy 
+``
+
+##
