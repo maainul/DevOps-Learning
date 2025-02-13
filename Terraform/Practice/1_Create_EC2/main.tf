@@ -5,26 +5,23 @@ provider "aws" {
   secret_key = ""
 }
 
-locals {
-  env = "dev"
-}
-
 # Dedicated VPC
 resource "aws_vpc" "vpc" {
-  cidr_block           = var.vpc_cidr_block
+  cidr_block           = lookup(var.vpc_cidr_block, var.env)
   enable_dns_hostnames = true
   tags = {
-    Name = "${local.env}-vpc"
+    Name        = "${local.env}-vpc"
+    Environment = local.env
   }
 }
 
 # Subnet Block
 resource "aws_subnet" "public_subnet" {
-  count      = 1
+  count      = length(lookup(var.public_subnet_cidr_blocks, var.env))
   vpc_id     = aws_vpc.vpc.id
-  cidr_block = var.public_subnet_cidr_blocks[count.index]
+  cidr_block = lookup(var.public_subnet_cidr_blocks, var.env)[count.index]
   tags = {
-    Name = "${local.env}-public-subnet"
+    Name = "${local.env}-public-subnet-${count.index + 1}"
   }
 }
 
@@ -120,12 +117,15 @@ resource "aws_route_table" "pub_rt" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.my_igw.id
   }
+  tags = {
+    Name = "${local.env}_rt"
+  }
 }
 
 # Route Table assocation
 resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.pub_rt.id
-  subnet_id = aws_subnet.public_subnet[0].id  
+  subnet_id      = aws_subnet.public_subnet[0].id
 }
 
 #EC2 Instance 
@@ -136,7 +136,20 @@ resource "aws_instance" "terademo" {
   associate_public_ip_address = true
   key_name                    = aws_key_pair.generated_key.key_name
   security_groups             = [aws_security_group.sg.id]
+  depends_on                  = [aws_key_pair.generated_key]
   tags = {
-    Name = "${local.env}_tera_test"
+    Name        = "${local.env}_tera_test"
+    Environment = local.env
   }
+  # provisioner "file" {
+  #   source      = "D:/Codes/DevOps-Learning/Terraform/Practice/1_Create_EC2/README.md"
+  #   destination = "/home/ubuntu/README.md"
+  # }
+  # connection {
+  #   type        = "ssh"
+  #   host        = self.public_ip
+  #   user        = "ubuntu"
+  #   private_key = tls_private_key.terraform_key.private_key_pem
+  #   timeout     = "10m"
+  # }
 }

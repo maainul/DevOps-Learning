@@ -1,3 +1,13 @@
+variable "env" {
+  description = "Deployment environment"
+  type        = string
+  default     = "dev"
+}
+
+locals {
+  env = var.env
+}
+
 variable "ami" {
   description = "Ami Code"
   type        = string
@@ -17,19 +27,33 @@ variable "number_of_instance" {
 
 variable "vpc_cidr_block" {
   description = "CIDR Block For VPC"
-  default     = "10.0.0.0/16"
+  type        = map(string)
 
+  default = {
+    dev     = "10.0.0.0/16"
+    staging = "10.1.0.0/16"
+    prod    = "10.2.0.0/16"
+  }
 }
 
 variable "public_subnet_cidr_blocks" {
   description = "public subnet cidr blocks"
-  type        = list(string)
-  default     = ["10.0.1.0/24", "10.0.2.0/24"]
+  type        = map(list(string))
+  default = {
+    dev     = ["10.0.1.0/24", "10.0.2.0/24"]
+    staging = ["10.1.1.0/24", "10.1.2.0/24"]
+    prod    = ["10.2.1.0/24", "10.2.2.0/24"]
+  }
 }
 
+# private_subnet_cidr_blocks per environment
 variable "private_subnet_cidr_blocks" {
-  description = "private subnet cidr block"
-  type        = list(string)
-  default     = ["10.0.3.0/24", "10.0.4.0/24"]
+  description = "Private subnet CIDR blocks"
+  type        = map(list(string))
 
+  default = {
+    dev     = ["10.0.4.0/24", "10.0.5.0/24"]
+    staging = ["10.1.4.0/24", "10.1.5.0/24"]
+    prod    = ["10.2.4.0/24", "10.2.5.0/24"]
+  }
 }
