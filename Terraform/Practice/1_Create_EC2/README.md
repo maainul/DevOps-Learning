@@ -414,47 +414,6 @@ resource "aws_subnet" "public_subnet" {
   }
 }
 ```
-
-#### **Run Terraform with Different Environments**
-```sh
-terraform apply -var="env=dev"
-terraform apply -var="env=staging"
-terraform apply -var="env=production"
-```
-Each environment will now have a **unique** VPC CIDR and subnet CIDR, preventing conflicts.
-
----
-
-### **Solution 2: Use Separate AWS Accounts or Regions**
-If you're running in **separate AWS accounts** or **different regions**, the CIDR blocks can remain the same because they won't overlap.
-
-- **Different AWS accounts**: No conflict because they exist in different AWS accounts.  
-- **Different AWS regions**: No conflict because networking is region-specific.  
-
-Modify `provider.tf` to specify regions:
-```hcl
-provider "aws" {
-  region  = lookup(var.region_map, var.env)
-  profile = "default"
-}
-
-variable "region_map" {
-  type = map(string)
-  default = {
-    dev        = "us-east-1"
-    staging    = "us-east-2"
-    production = "us-west-1"
-  }
-}
-```
-Then run:
-```sh
-terraform apply -var="env=dev"
-terraform apply -var="env=staging"
-terraform apply -var="env=production"
-```
-Each environment is deployed in a different region.
-
 ---
 
 ### **Summary**

@@ -1,13 +1,21 @@
-provider "aws" {
-  region     = "us-east-1"
-  profile    = "default"
-  access_key = ""
-  secret_key = ""
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
 }
+
+provider "aws" {
+  region  = var.aws_region
+  profile = var.aws_profile
+}
+
 
 # Dedicated VPC
 resource "aws_vpc" "vpc" {
-  cidr_block           = lookup(var.vpc_cidr_block, var.env)
+  cidr_block           = var.vpc_cidr_block[var.env]
   enable_dns_hostnames = true
   tags = {
     Name        = "${local.env}-vpc"
@@ -17,9 +25,9 @@ resource "aws_vpc" "vpc" {
 
 # Subnet Block
 resource "aws_subnet" "public_subnet" {
-  count      = length(lookup(var.public_subnet_cidr_blocks, var.env))
+  count      = length(var.public_subnet_cidr_blocks[var.env])
   vpc_id     = aws_vpc.vpc.id
-  cidr_block = lookup(var.public_subnet_cidr_blocks, var.env)[count.index]
+  cidr_block = var.public_subnet_cidr_blocks[var.env][count.index]
   tags = {
     Name = "${local.env}-public-subnet-${count.index + 1}"
   }
@@ -59,47 +67,28 @@ resource "aws_eip_association" "terademo_eip_association" {
 
 # Security Group
 resource "aws_security_group" "sg" {
-  name        = "${local.env}-sg"
+  name        = "${var.env}-sg"
   description = "Security group for public ips"
   vpc_id      = aws_vpc.vpc.id
-}
 
-# Ingress Rules
-resource "aws_security_group_rule" "allow_80" {
-  security_group_id = aws_security_group.sg.id
-  type              = "ingress"
-  cidr_blocks       = ["0.0.0.0/0"]
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-}
-
-resource "aws_security_group_rule" "allow_22" {
-  security_group_id = aws_security_group.sg.id
-  type              = "ingress"
-  cidr_blocks       = ["0.0.0.0/0"]
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-}
-
-resource "aws_security_group_rule" "allow_3000" {
-  security_group_id = aws_security_group.sg.id
-  type              = "ingress"
-  cidr_blocks       = ["0.0.0.0/0"]
-  from_port         = 3000
-  to_port           = 3000
-  protocol          = "tcp"
-}
-
-#Egress Rules
-resource "aws_security_group_rule" "allow_all" {
-  security_group_id = aws_security_group.sg.id
-  type              = "egress"
-  cidr_blocks       = ["0.0.0.0/0"]
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
+  dynamic "ingress" {
+    for_each = var.security_group_rules
+    content {
+      cidr_blocks = ingress.value.cidr_blocks
+      from_port   = ingress.value.from_port
+      to_port     = ingress.value.to_port
+      protocol    = ingress.value.protocol
+    }
+  }
+  egress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+  tags = {
+    Name = "${var.env}-frontend-sg"
+  }
 }
 
 # Create Internet Gateway
