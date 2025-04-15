@@ -1,0 +1,18 @@
+variable "vpc_cidr_block" {
+  description = "CIDR Block For VPC"
+  type        = map(string)
+
+  default = {
+    dev     = "10.0.0.0/16"
+    staging = "10.1.0.0/16"
+    prod    = "10.2.0.0/16"
+  }
+}
+
+resource "aws_vpc" "vpc" {
+  cidr_block = var.vpc_cidr_block[terraform.workspace]
+  tags = {
+    Name        = "${terraform.workspace}-vpc"
+    Environment = terraform.workspace
+  }
+}

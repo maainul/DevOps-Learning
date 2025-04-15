@@ -192,6 +192,51 @@ resource "aws_instance" "terademo" {
   }
 }
 ```
+The **InvalidParameterValue** error with the **EC2 Key Pair** occurs because AWS does not support **4096-bit RSA keys** for EC2 key pairs — the maximum supported key length is **2048 bits**.
+
+---
+
+### ✅ Fix the Error
+Modify your **tls_private_key** resource to use **2048 bits** instead of **4096 bits**.
+
+### Update this Block:
+```hcl
+resource "tls_private_key" "terraform_key" {
+  algorithm = "RSA"
+  rsa_bits  = 2048 # Change from 4096 to 2048
+}
+```
+
+---
+
+### Why This Happens?
+AWS EC2 key pairs only accept **RSA 2048-bit** keys for better compatibility and performance.
+
+---
+
+### After the Fix:
+1. **Re-initialize** your project:
+   ```bash
+   terraform init
+   ```
+
+2. **Refresh the state (optional)**:
+   ```bash
+   terraform refresh
+   ```
+
+3. **Plan the changes**:
+   ```bash
+   terraform plan
+   ```
+
+4. **Apply the changes**:
+   ```bash
+   terraform apply
+   ```
+
+---
+
 
 
 

@@ -1,15 +1,11 @@
 variable "env" {
-  description = "Deployment environment"
+  description = "Dev Enviorment"
   type        = string
   default     = "dev"
   validation {
     condition     = contains(["dev", "staging", "prod"], var.env)
-    error_message = "Environment must be dev, staging or prod"
+    error_message = "Env must be dev,staging or prod"
   }
-}
-
-locals {
-  env = var.env
 }
 
 variable "aws_region" {
@@ -31,7 +27,7 @@ variable "ami" {
 }
 
 variable "instance_type" {
-  description = "instance type"
+  description = "Instance Type"
   type        = string
   default     = "t2.micro"
 }
@@ -48,8 +44,9 @@ variable "vpc_cidr_block" {
 }
 
 variable "public_subnet_cidr_blocks" {
-  description = "public subnet cidr blocks"
+  description = "Public subnet cidr blocks"
   type        = map(list(string))
+
   default = {
     dev     = ["10.0.1.0/24"]
     staging = ["10.1.1.0/24"]
@@ -57,38 +54,9 @@ variable "public_subnet_cidr_blocks" {
   }
 }
 
-# private_subnet_cidr_blocks per environment
-variable "private_subnet_cidr_blocks" {
-  description = "Private subnet CIDR blocks"
-  type        = map(list(string))
 
-  default = {
-    dev     = ["10.0.4.0/24"]
-    staging = ["10.1.4.0/24"]
-    prod    = ["10.2.4.0/24"]
-  }
-}
-
-variable "allowed_ssh_cidr_blocks" {
-  description = "CIDR Blocks allowed for ssh ccess"
-  type        = list(string)
-  default     = ["0.0.0.0/0"]
-}
-
-variable "allowed_http_cidr_blocks" {
-  description = "CIDR Blocks allowed for HTTP/HTTPS"
-  type        = list(string)
-  default     = ["0.0.0.0/0"]
-}
-
-variable "allowed_ports" {
-  description = "List of allowed ports"
-  type        = list(number)
-  default     = [80, 22, 3000]
-}
-
-variable "security_group_rules" {
-  description = "List of ssecurity groups"
+variable "security_groups" {
+  description = "List of security groups"
   type = list(object({
     cidr_blocks = list(string)
     from_port   = number
@@ -98,7 +66,6 @@ variable "security_group_rules" {
   default = [
     { cidr_blocks = ["0.0.0.0/0"], from_port = 80, to_port = 80, protocol = "tcp" },
     { cidr_blocks = ["0.0.0.0/0"], from_port = 22, to_port = 22, protocol = "tcp" },
-    { cidr_blocks = ["0.0.0.0/0"], from_port = 3000, to_port = 3000, protocol = "tcp" },
-
+    { cidr_blocks = ["0.0.0.0/0"], from_port = 3000, to_port = 3000, protocol = "tcp" }
   ]
 }
