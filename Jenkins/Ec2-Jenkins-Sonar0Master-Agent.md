@@ -28,6 +28,8 @@
 
 **13. Install and Integrate Sonarqube in Jenkins**
 
+**14. Add gitleaks**
+
 ### 1. Install Jenkins on EC2 :
 
 Sometimes we need to install many things on master machine so 16GB RAM would be good .
@@ -588,3 +590,63 @@ sudo apt install trivy -y
 
 trivy -v
 ```
+
+---
+
+### 🔐 What is **Gitleaks**?
+
+**Gitleaks** is an open-source **secrets scanner** for Git repositories. It helps catch **sensitive information** that developers might accidentally commit to a repository — things like:
+
+- API keys
+- Passwords
+- Private keys
+- Tokens (AWS, GitHub, Slack, etc.)
+- Database connection strings
+- Secrets in `.env` files
+
+---
+
+### 🕵️‍♂️ What does Gitleaks **catch**?
+
+Here are some real examples of what it looks for:
+
+| Type              | Example it catches                          |
+|-------------------|----------------------------------------------|
+| AWS Access Key     | `AKIAIOSFODNN7EXAMPLE`                      |
+| Private Key        | `-----BEGIN RSA PRIVATE KEY-----`          |
+| GitHub Token       | `ghp_16CharsofGitHubToken`                 |
+| Slack Webhook URL  | `https://hooks.slack.com/services/...`     |
+| JWT Tokens         | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`   |
+| DB Credentials     | `DB_PASSWORD=mysecretpassword`             |
+| .env Secrets       | `API_SECRET_KEY=abcd1234`                  |
+
+---
+
+### 🔄 Where does it look?
+
+By default:
+- Your **current working directory**
+- All files in the repository
+- It can scan **history**, **branches**, **commits**, or even **remote repos**
+
+---
+
+### 🛡️ Why should you use Gitleaks?
+
+To avoid scenarios like:
+- Accidentally pushing a `.env` file with secrets
+- Leaking a private key or database password to GitHub
+- Breaching company or compliance policies
+
+---
+
+### 🔧 Bonus
+
+You can customize it with a config file (`.gitleaks.toml`) to:
+- Add custom rules
+- Ignore certain directories or files
+- Exclude known safe secrets
+
+---
+
+
