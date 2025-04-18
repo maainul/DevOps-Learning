@@ -138,9 +138,34 @@ pipeline {
 ![Screenshot(30)](https://github.com/user-attachments/assets/83abf3ea-96c7-4cc6-81df-c0bc0d12be57)
 ![Screenshot(31)](https://github.com/user-attachments/assets/346fcb8d-0229-4830-82c5-53a886203d7d)
 ![Screenshot(32)](https://github.com/user-attachments/assets/bc0a0262-d3d1-44d9-ae6b-7318fdbe789e)
-![Screenshot(34)](https://github.com/user-attachments/assets/055204b9-f9ca-44f1-b68b-797fa000ae92)
 
-After Reduild it create new folder in master 
+#### Update pipeline syntax : This will allow create new Folder workspace/job-name and 
+```groovy
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git url: 'https://github.com/your-username/your-repo.git', branch: 'main'
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'Repository cloned. Listing files...'
+                sh 'ls -la'
+            }
+        }
+    }
+}
+
+```
+![Image](https://github.com/user-attachments/assets/6e52dac1-af1d-491c-9158-816179c7b193)
+![Image](https://github.com/user-attachments/assets/9b99c7be-cd7f-4207-a0df-f6ff06cbeff8)
+
+**After Rebuild it create new folder in master** 
+
+
 ```
 ubuntu@ip-172-31-95-119:/var/lib/jenkins/workspace/node-demo$ ls
 README.md  index.js  package-lock.json  package.json
