@@ -234,6 +234,27 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDuD0Ynt0JGNd1tvLQJRpOd1AGOfpeZUDMTC81Vc90o
 
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIuaTMgACMWOjvE6FhmYNo43Ex/dkaFRjz2PLtqcdbsq ubuntu@ip-172-31-95-119
 ```
+### Update master configuration : modify this line : agent any to agent { label 'mainul' }
+```groovy
+pipeline {
+    agent { label 'mainul' }
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git url: 'https://github.com/maainul/NodeJs-Docker.git', branch: 'main'
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'Repository cloned. Listing files...'
+                sh 'ls -la'
+            }
+        }
+    }
+}
+
+```
 
 Thanks — this is totally normal! The reason you don’t see a `.ssh` folder under `/var/lib/jenkins/` is simply because it hasn’t been created yet.
 
