@@ -650,3 +650,213 @@ You can customize it with a config file (`.gitleaks.toml`) to:
 ---
 
 
+Great! Let me walk you through everything clearly — how to **generate**, **locate**, and **display** the Gitleaks report file in Jenkins console output.
+
+---
+
+## ✅ Step-by-step: How to Generate & Show Gitleaks Report in Jenkins
+
+---
+### Add toml file to your repo : .gitleaks.toml
+
+```toml
+title = "Custom Gitleaks Rules"
+version = "3"
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key"
+regex = '''AKIA[0-9A-Z]{16}'''
+tags = ["key", "AWS"]
+
+[[rules]]
+id = "aws-secret-key"
+description = "AWS Secret Key"
+regex = '''(?i)aws(.{0,20})?(?-i)['\"][0-9a-zA-Z\/+]{40}['\"]'''
+tags = ["key", "AWS"]
+
+[[rules]]
+id = "github-pat"
+description = "GitHub Personal Access Token"
+regex = '''ghp_[0-9a-zA-Z]{36}'''
+tags = ["key", "GitHub"]
+
+```
+
+### Full pipeline:
+```groovy
+pipeline {
+    agent { label 'mainul' }
+
+    environment{
+            // SONARQUBE_SERVER = 'SonarQube'
+            // SCANNER_HOME = tool 'SonarQube Scanner'
+            DOCKER_IMAGE='maainul/nodejs-docker:latest'
+            DOCKER_CREDENTIALS_ID = 'dockerhub'
+    }
+
+    stages {
+
+        stage('Clone Repo') {
+            steps {
+                git url: 'https://github.com/maainul/NodeJs-Docker.git', branch: 'main'
+            }
+        }
+
+        stage('Secrets Scan') {
+            steps {
+                sh '''
+                    if ! command -v gitleaks &> /dev/null
+                    then
+                        echo "Installing Gitleaks..."
+                        curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz -o gitleaks.tar.gz
+                        tar -xvzf gitleaks.tar.gz
+                        sudo mv gitleaks /usr/local/bin/gitleaks
+                        rm gitleaks.tar.gz  # Clean up the tarball after extraction
+                    fi
+
+                    echo "Running Gitleaks Scan..."
+                    gitleaks detect --source . --config .gitleaks.toml --report-format json --report-path gitleaks-report.json --verbose --redact
+
+                    echo "=============================="
+                    echo "🚨 Gitleaks Detected Secrets 🚨"
+                    echo "=============================="
+                    cat gitleaks-report.json
+                '''
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo "Building the Docker image..."
+                sh 'docker build -t $DOCKER_IMAGE .'
+                echo "Docker image built successfully!"
+            }
+        }
+
+        stage('TRIVY FS SCAN') {
+            steps {
+                sh 'trivy fs . || echo "FS scan completed with vulnerabilities."'
+            }
+        }
+
+        stage('Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: env.DOCKER_CREDENTIALS_ID,
+                    passwordVariable: "dockerHubPass",
+                    usernameVariable: 'dockerHubUser')]) {
+                        sh 'docker login -u ${dockerHubUser} -p ${dockerHubPass}'
+                        sh 'docker push $DOCKER_IMAGE'
+                        sh 'docker logout'
+                }
+            }
+        }
+        stage('TRIVY IMAGE SCAN') {
+            steps {
+                sh """
+                trivy image --severity CRITICAL,HIGH $DOCKER_IMAGE || echo "Trivy image scan completed."
+                """
+            }
+        } 
+        stage('Test') {
+            steps {
+                echo "Running tests..."
+                // Add test commands here if required
+                echo "Tests completed!"
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo "Stopping and removing existing containers..."
+                sh '''
+                    # Stop all running containers
+                    docker ps -q | xargs -r docker stop
+                    # Remove all stopped containers
+                    docker ps -aq | xargs -r docker rm
+                '''
+                echo "Existing containers stopped and removed."
+
+                echo "Deploying the application..."
+                sh 'docker compose up -d'
+                echo "Application deployed successfully!"
+            }
+        }
+    }
+}
+
+```
+### ✅ 1. **Generate the Report**
+Add this command in your Jenkins pipeline/script:
+
+```bash
+gitleaks detect --source . --config .gitleaks.toml --report=gitleaks-report.json --verbose --redact
+```
+
+This will:
+- Scan your repo
+- Save the results (if any leaks found) to `gitleaks-report.json` in the **workspace directory**
+
+> **Location**: By default, it will be inside your job workspace (e.g. `/var/lib/jenkins/workspace/your-job-name/gitleaks-report.json`)
+
+---
+
+### ✅ 2. **Show the Report in Console Output**
+Immediately after the scan, **print the file content** to the console:
+
+```bash
+echo "=============================="
+echo "🚨 Gitleaks Detected Secrets 🚨"
+echo "=============================="
+cat gitleaks-report.json
+```
+
+---
+
+### 🧪 Example Jenkins Shell Step (Full)
+If you're using a freestyle Jenkins job with a shell build step:
+
+```bash
+echo "Installing Gitleaks..."
+curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz -o gitleaks.tar.gz
+tar -xvzf gitleaks.tar.gz
+sudo mv gitleaks /usr/local/bin/gitleaks
+rm gitleaks.tar.gz
+
+echo "Running Gitleaks Scan..."
+  gitleaks detect --source . --config .gitleaks.toml --report-format json --report-path gitleaks-report.json --verbose --redact
+
+echo "=============================="
+echo "🚨 Gitleaks Detected Secrets 🚨"
+echo "=============================="
+cat gitleaks-report.json
+```
+
+---
+
+### 📍 Where will you see the result?
+
+1. ✅ **In Jenkins Console Output** (under "Build > Console Output")
+2. ✅ **As a file** in Jenkins job workspace:  
+   You can view/download it from:
+   ```
+   http://<your-jenkins-url>/job/<your-job-name>/ws/gitleaks-report.json
+   ```
+
+---
+
+### ✅ Bonus: Fail the build if leaks are found
+You can add this after the scan:
+
+```bash
+if grep -q '"Leaks":\[\]' gitleaks-report.json; then
+  echo "✅ No leaks found"
+else
+  echo "❌ Leaks detected! Failing build..."
+  exit 1
+fi
+```
+
+---
+
+Want help writing this in a `Jenkinsfile` (declarative or scripted)? Just let me know!
