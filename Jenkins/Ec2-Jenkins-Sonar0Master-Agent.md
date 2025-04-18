@@ -571,7 +571,20 @@ pipeline {
 ```
 Add plugins nodejs as well and global variable System.
 
+## Install Trivy in Agent:
 
+Solution: Install Trivy on the Agent
+SSH into your agent server and install Trivy.
 
+```bash
+sudo apt update
+sudo apt install wget apt-transport-https gnupg lsb-release -y
 
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
 
+sudo apt update
+sudo apt install trivy -y
+
+trivy -v
+```
