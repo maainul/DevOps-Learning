@@ -2,20 +2,31 @@
 
 ## Topics :
     
-### 1. Install Jenkins on EC2
-### 2. Associate New Elastic IP Address
-### 3. Connect With MobaXtrem
-### 4. Install Jenkins On EC2
-### 5. Add 8080 Port in Security Group
-### 6. Update Password
-### 7. Create Pipeline Project 
-### 8. Add Webhook
-### 9. Create agent node 
-### 10. Setting Up Agent Node in Jenkins
-### 11. Add Dockerfile
-### 12. Shared Library
-### 13. Install and Integrate Sonarqube in Jenkins
+**1. Install Jenkins on EC2**
 
+**2. Associate New Elastic IP Address**
+
+**3. Connect With MobaXtrem**
+
+**4. Install Jenkins On EC2**
+
+**5. Add 8080 Port in Security Group**
+
+**6. Update Password**
+
+**7. Create Pipeline Project**
+
+**8. Add Webhook**
+
+**9. Create agent node**
+
+**10. Setting Up Agent Node in Jenkins**
+
+**11. Add Dockerfile**
+
+**12. Shared Library**
+
+**13. Install and Integrate Sonarqube in Jenkins**
 
 ### 1. Install Jenkins on EC2 :
 
