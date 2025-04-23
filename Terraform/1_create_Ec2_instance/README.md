@@ -1,4 +1,3 @@
-Sure! Here's a clean, clear description you can put in your `README.md`, along with the exact Terraform commands to run the configuration:
 
 ---
 
@@ -31,7 +30,7 @@ resource "aws_instance" "terademo" {
 - AWS credentials set up (via `~/.aws/credentials`, environment variables, or `provider` block)
 - A valid EC2 key pair named `nodejs-test-pair`
 - A subnet in your default or custom VPC
-
+- login to aws cli : `aws configure`
 ### 🧪 Commands to Deploy
 
 ```bash
