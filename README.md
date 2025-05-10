@@ -1,34 +1,21 @@
-# jenkins-learning
+# Complete CICD Flow
 
 ## Topics :
     
-**1. Install Jenkins on EC2**
-
-**2. Associate New Elastic IP Address**
-
-**3. Connect With MobaXtrem**
-
-**4. Install Jenkins On EC2**
-
-**5. Add 8080 Port in Security Group**
-
-**6. Update Password**
-
-**7. Create Pipeline Project**
-
-**8. Add Webhook**
-
-**9. Create agent node**
-
-**10. Setting Up Agent Node in Jenkins**
-
-**11. Add Dockerfile**
-
-**12. Shared Library**
-
-**13. Install and Integrate Sonarqube in Jenkins**
-
-**14. Add gitleaks**
+**1. Install Jenkins on EC2**<br/>
+**2. Associate New Elastic IP Address**<br/>
+**3. Connect With MobaXtrem**<br/>
+**4. Install Jenkins On EC2**<br/>
+**5. Add 8080 Port in Security Group**<br/>
+**6. Update Password**<br/>
+**7. Create Pipeline Project**<br/>
+**8. Add Webhook**<br/>
+**9. Create agent node**<br/>
+**10. Setting Up Agent Node in Jenkins**<br/>
+**11. Add Dockerfile**<br/>
+**12. Shared Library**<br/>
+**13. Install and Integrate Sonarqube in Jenkins**<br/>
+**14. Add gitleaks**<br/>
 
 ### 1. Install Jenkins on EC2 :
 

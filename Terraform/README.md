@@ -1,117 +1,29 @@
-Sure! Here are **commonly used Terraform commands**, grouped by purpose:
+# **Step-by-Step: Install Terraform on Windows**
+
+1. **Download Terraform**
+   - Go to the official Terraform downloads page:  
+     👉 [https://developer.hashicorp.com/terraform/downloads](https://developer.hashicorp.com/terraform/downloads)
+   - Select **Windows** > Choose the right **architecture** (e.g., `amd64` for 64-bit systems).
+   - Download the `.zip` file.
+![Image](https://github.com/user-attachments/assets/006e2a26-b584-4775-b945-bb1c8beb2634)
+
+2. **Extract the ZIP**
+   - Extract the ZIP file to a folder (e.g., `C:\terraform`).
+
+3. **Add Terraform to System PATH**
+   - Open **Start Menu** → search for **Environment Variables** → Click `Edit the system environment variables`.
+   - In the System Properties window, click **Environment Variables**.
+   - Under **System variables**, find and select `Path` → click **Edit**.
+   - Click **New** and add the path to your Terraform folder (e.g., `C:\terraform`).
+   - Click OK on all windows to save.
+
+4. **Verify Installation**
+   - Open **Command Prompt** or **PowerShell** and run:
+
+     ```bash
+     terraform version
+     ```
+
+   - You should see the installed Terraform version.
 
 ---
-
-### 🔧 **Basic Terraform Workflow**
-
-1. **Initialize the working directory**
-
-   ```bash
-   terraform init
-   ```
-
-   > Downloads the provider plugins and sets up your working directory.
-
-2. **Format configuration files**
-
-   ```bash
-   terraform fmt
-   ```
-
-   > Formats `.tf` files for readability and consistency.
-
-3. **Validate configuration**
-
-   ```bash
-   terraform validate
-   ```
-
-   > Checks whether your `.tf` files are syntactically valid.
-
-4. **Create execution plan**
-
-   ```bash
-   terraform plan
-   ```
-
-   > Shows what Terraform will do before making changes.
-
-5. **Apply configuration**
-
-   ```bash
-   terraform apply
-   ```
-
-   > Applies the planned changes to the infrastructure.
-
-6. **Destroy infrastructure**
-
-   ```bash
-   terraform destroy
-   ```
-
-   > Tears down all infrastructure managed by Terraform.
-
----
-
-### 📦 **State Management**
-
-1. **List resources in the state**
-
-   ```bash
-   terraform state list
-   ```
-
-2. **Show detailed info about a resource**
-
-   ```bash
-   terraform state show <resource_name>
-   ```
-
-3. **Remove a resource from state (without destroying it)**
-
-   ```bash
-   terraform state rm <resource_name>
-   ```
-
-4. **Import existing resource into state**
-
-   ```bash
-   terraform import <resource_name> <resource_id>
-   ```
-
----
-
-### 🔄 **Workspace Management**
-
-1. **List all workspaces**
-
-   ```bash
-   terraform workspace list
-   ```
-
-2. **Create a new workspace**
-
-   ```bash
-   terraform workspace new <workspace_name>
-   ```
-
-3. **Switch to a workspace**
-
-   ```bash
-   terraform workspace select <workspace_name>
-   ```
-
----
-
-### 📁 **Modules**
-
-1. **Get modules**
-
-   ```bash
-   terraform get
-   ```
-
----
-
-Would you like these in a PDF cheat sheet or want to know about commands for a specific provider (like AWS, Azure, GCP, etc.)?
