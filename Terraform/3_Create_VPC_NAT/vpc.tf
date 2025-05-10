@@ -8,6 +8,8 @@ resource "aws_vpc" "dev" {
     Name = "dev"
   }
 }
+
+
 # Creating Public Subnets in VPC
 resource "aws_subnet" "dev-public-1" {
   vpc_id                  = aws_vpc.dev.id

@@ -330,3 +330,264 @@ resource "aws_lb_listener" "listener_lb" {
 
 }
 ```
+
+
+
+Absolutely! Below is the **full working Terraform code** for your **two-tier architecture** with:
+
+* ✅ 1 VPC
+* ✅ 1 Internet Gateway
+* ✅ 1 NAT Gateway
+* ✅ 1 Public Subnet
+* ✅ 1 Private Subnet
+* ✅ EC2 instance in public subnet (web/app layer)
+* ✅ RDS instance in private subnet (DB layer)
+* ✅ Proper route tables for both subnets
+
+---
+
+### 🧾 `main.tf`
+
+```hcl
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.16"
+    }
+  }
+}
+
+provider "aws" {
+  region  = "ap-south-1"
+  profile = "default"
+}
+
+# VPC
+resource "aws_vpc" "vpc" {
+  cidr_block       = "10.0.0.0/16"
+  instance_tenancy = "default"
+
+  tags = {
+    Name = "vpc-project"
+  }
+}
+
+# Internet Gateway
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.vpc.id
+  tags = {
+    Name = "igw-project"
+  }
+}
+
+# Elastic IP for NAT Gateway
+resource "aws_eip" "nat_eip" {
+  vpc = true
+}
+
+# Public Subnet
+resource "aws_subnet" "public_subnet" {
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "ap-south-1a"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "public-subnet"
+  }
+}
+
+# Private Subnet
+resource "aws_subnet" "private_subnet" {
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = "ap-south-1a"
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "private-subnet"
+  }
+}
+
+# NAT Gateway
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat_eip.id
+  subnet_id     = aws_subnet.public_subnet.id
+
+  tags = {
+    Name = "nat-gateway"
+  }
+}
+
+# Route Table for Public Subnet
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
+  tags = {
+    Name = "public-rt"
+  }
+}
+
+# Associate Public Subnet to Public Route Table
+resource "aws_route_table_association" "public_assoc" {
+  subnet_id      = aws_subnet.public_subnet.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
+# Route Table for Private Subnet
+resource "aws_route_table" "private_rt" {
+  vpc_id = aws_vpc.vpc.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
+
+  tags = {
+    Name = "private-rt"
+  }
+}
+
+# Associate Private Subnet to Private Route Table
+resource "aws_route_table_association" "private_assoc" {
+  subnet_id      = aws_subnet.private_subnet.id
+  route_table_id = aws_route_table.private_rt.id
+}
+
+# Public Security Group
+resource "aws_security_group" "public_sg" {
+  name        = "public-sg"
+  description = "Allow HTTP, SSH"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Private Security Group
+resource "aws_security_group" "private_sg" {
+  name        = "private-sg"
+  description = "Allow MySQL from Public SG"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    description              = "MySQL"
+    from_port                = 3306
+    to_port                  = 3306
+    protocol                 = "tcp"
+    security_groups          = [aws_security_group.public_sg.id]
+  }
+
+  ingress {
+    description              = "SSH"
+    from_port                = 22
+    to_port                  = 22
+    protocol                 = "tcp"
+    security_groups          = [aws_security_group.public_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# EC2 Instance (Web Server)
+resource "aws_instance" "web" {
+  ami                         = var.ami_id
+  instance_type               = var.instance_type
+  subnet_id                   = aws_subnet.public_subnet.id
+  key_name                    = var.key_name
+  vpc_security_group_ids      = [aws_security_group.public_sg.id]
+  associate_public_ip_address = true
+
+  tags = {
+    Name = "web-server"
+  }
+}
+
+# RDS Subnet Group
+resource "aws_db_subnet_group" "db_subnet" {
+  name       = "db-subnet"
+  subnet_ids = [aws_subnet.private_subnet.id]
+
+  tags = {
+    Name = "db-subnet"
+  }
+}
+
+# RDS Instance (MySQL)
+resource "aws_db_instance" "rds" {
+  identifier             = "db-instance"
+  allocated_storage      = 20
+  engine                 = "mysql"
+  engine_version         = "5.7"
+  instance_class         = "db.t3.micro"
+  username               = "admin"
+  password               = "password123"
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet.name
+  vpc_security_group_ids = [aws_security_group.private_sg.id]
+  db_name                = "project_db"
+  skip_final_snapshot    = true
+  publicly_accessible    = false
+}
+```
+
+---
+
+### 🧩 `variables.tf`
+
+```hcl
+variable "ami_id" {
+  default = "ami-0e670eb768a5fc3d4" # Example Ubuntu AMI for ap-south-1
+}
+
+variable "instance_type" {
+  default = "t2.micro"
+}
+
+variable "key_name" {
+  default = "your-key-name"
+}
+```
+
+---
+
+### ✅ After Setup
+
+1. Make sure your key name exists in your AWS account (`.pem` file).
+2. Use `terraform init`, `plan`, and `apply`.
+3. The EC2 instance can be accessed via public IP.
+4. The RDS instance lives in the private subnet and has no direct public access.
+
+---
+
+Would you like to add an **Application Load Balancer** in front of the web servers next?
